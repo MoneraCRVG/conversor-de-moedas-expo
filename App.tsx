@@ -8,29 +8,30 @@ type CurrencyExchange = {
   ask: string;
 }
 type Response = {
-  USD: CurrencyExchange
+  [key: string]: CurrencyExchange;
 }
 export default function App() {
-  const [currencies, setCurrencies] = useState<Response[]>([]);
+  const [currencies, setCurrencies] = useState<Response>({});
 
   useEffect(() => {
     async function getDailyCurrenciesExchanges() {
       try {
-        const response: Response[] = await api();
+        const response: Response = await api();
         setCurrencies(response);
-        console.log(currencies)
       } catch (error) {
         console.error(error)
       }
     }
     getDailyCurrenciesExchanges()
   }, [])
+
+  useEffect(() => {
+    console.log(currencies)
+  }, [currencies])
   return (
     <View style={styles.container}>
       <Text>
-        {currencies.forEach((teste) => {
-          return (<Text>{teste.name}</Text>)
-        })}
+      <Text>{currencies.USD?.ask ? `USD Ask: ${currencies.USD.ask}` : 'Loading...'}</Text>
       </Text>
     </View>
   );
